@@ -1,0 +1,14 @@
+GroupAggregate  (cost=1136338.38..1269350.33 rows=6626726 width=16) (actual time=4069.470..5224.749 rows=5.00 loops=1)
+  Group Key: (date_trunc('month'::text, salesdate))
+  Buffers: shared hit=10308 read=66516 temp read=19651 written=19689
+  ->  Sort  (cost=1136338.38..1153064.34 rows=6690384 width=8) (actual time=3710.241..4521.357 rows=6690599.00 loops=1)
+        Sort Key: (date_trunc('month'::text, salesdate))
+        Sort Method: external merge  Disk: 78640kB
+        Buffers: shared hit=10308 read=66516 temp read=19651 written=19689
+        ->  Seq Scan on sales s  (cost=0.00..194916.00 rows=6690384 width=8) (actual time=0.364..1962.583 rows=6690599.00 loops=1)
+              Filter: ((salesdate >= '2018-01-01 00:00:00'::timestamp without time zone) AND (salesdate < '2019-01-01 00:00:00'::timestamp without time zone))
+              Rows Removed by Filter: 67526
+              Buffers: shared hit=10308 read=66516
+
+Planning Time: 3.594 ms
+Execution Time: 5244.297 ms
