@@ -1,0 +1,15 @@
+Finalize GroupAggregate  (cost=1000.00..120095.27 rows=1 width=16) (actual time=1093.641..1102.957 rows=1.00 loops=1)
+  Buffers: shared hit=10026 read=66798
+  ->  Gather  (cost=1000.00..120095.26 rows=2 width=16) (actual time=1093.230..1102.807 rows=3.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=10026 read=66798
+        ->  Partial GroupAggregate  (cost=0.00..119095.06 rows=1 width=16) (actual time=1016.234..1016.235 rows=1.00 loops=3)
+              Buffers: shared hit=10026 read=66798
+              ->  Parallel Seq Scan on sales s  (cost=0.00..119059.85 rows=14079 width=8) (actual time=1.729..978.030 rows=535683.33 loops=3)
+                    Filter: (date_trunc('month'::text, salesdate) = '2018-01-01 00:00:00'::timestamp without time zone)
+                    Rows Removed by Filter: 1717025
+                    Buffers: shared hit=10026 read=66798
+
+Planning Time: 0.458 ms
+Execution Time: 1103.212 ms
