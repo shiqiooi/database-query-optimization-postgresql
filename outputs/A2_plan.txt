@@ -1,0 +1,46 @@
+Limit  (cost=131307.65..131307.67 rows=10 width=41) (actual time=712.841..712.934 rows=10.00 loops=1)
+  Buffers: shared hit=302985
+  ->  Sort  (cost=131307.65..131307.89 rows=96 width=41) (actual time=712.840..712.931 rows=10.00 loops=1)
+        Sort Key: (sum(t.tx_count)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=302985
+        ->  HashAggregate  (cost=131304.37..131305.57 rows=96 width=41) (actual time=712.766..712.879 rows=96.00 loops=1)
+              Group Key: c.cityname
+              Batches: 1  Memory Usage: 56kB
+              Buffers: shared hit=302985
+              ->  Hash Join  (cost=128343.47..130827.64 rows=95346 width=17) (actual time=610.745..683.733 rows=98759.00 loops=1)
+                    Hash Cond: (cu.cityid = c.cityid)
+                    Buffers: shared hit=302985
+                    ->  Hash Join  (cost=128340.31..130563.15 rows=95346 width=12) (actual time=610.589..665.834 rows=98759.00 loops=1)
+                          Hash Cond: (cu.customerid = t.customerid)
+                          Buffers: shared hit=302984
+                          ->  Seq Scan on customers cu  (cost=0.00..1963.59 rows=98759 width=8) (actual time=0.038..6.797 rows=98759.00 loops=1)
+                                Buffers: shared hit=976
+                          ->  Hash  (cost=127148.48..127148.48 rows=95346 width=12) (actual time=610.182..610.270 rows=98759.00 loops=1)
+                                Buckets: 131072  Batches: 1  Memory Usage: 5268kB
+                                Buffers: shared hit=302008
+                                ->  Subquery Scan on t  (cost=125241.56..127148.48 rows=95346 width=12) (actual time=560.764..591.176 rows=98759.00 loops=1)
+                                      Buffers: shared hit=302008
+                                      ->  Finalize HashAggregate  (cost=125241.56..126195.02 rows=95346 width=12) (actual time=560.762..581.835 rows=98759.00 loops=1)
+                                            Group Key: sales.customerid
+                                            Batches: 1  Memory Usage: 6169kB
+                                            Buffers: shared hit=302008
+                                            ->  Gather  (cost=1000.43..124097.41 rows=228830 width=12) (actual time=0.731..518.149 rows=98759.00 loops=1)
+                                                  Workers Planned: 2
+                                                  Workers Launched: 2
+                                                  Buffers: shared hit=302008
+                                                  ->  Partial GroupAggregate  (cost=0.43..100214.41 rows=95346 width=12) (actual time=0.596..486.612 rows=32919.67 loops=3)
+                                                        Group Key: sales.customerid
+                                                        Buffers: shared hit=302008
+                                                        ->  Parallel Index Only Scan using idx_sales_customerid on sales  (cost=0.43..85182.34 rows=2815723 width=4) (actual time=0.559..269.864 rows=2252708.33 loops=3)
+                                                              Heap Fetches: 0
+                                                              Index Searches: 1
+                                                              Buffers: shared hit=302008
+                    ->  Hash  (cost=1.96..1.96 rows=96 width=13) (actual time=0.126..0.126 rows=96.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 13kB
+                          Buffers: shared hit=1
+                          ->  Seq Scan on cities c  (cost=0.00..1.96 rows=96 width=13) (actual time=0.075..0.094 rows=96.00 loops=1)
+                                Buffers: shared hit=1
+
+Planning Time: 0.403 ms
+Execution Time: 715.706 ms
