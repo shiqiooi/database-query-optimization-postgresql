@@ -1,0 +1,5 @@
+Planning Time: 0.924 ms
+Execution Time: 1034.053 ms
+Filter: (EXTRACT(year FROM salesdate) = '2018'::numeric)
+-> Parallel Seq Scan on sales
+Buffers: shared hit=10784 read=66040
