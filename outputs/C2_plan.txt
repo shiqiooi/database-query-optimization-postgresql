@@ -1,0 +1,15 @@
+GroupAggregate  (cost=237002.54..268543.90 rows=1576311 width=16) (actual time=1393.658..1393.659 rows=1.00 loops=1)
+  Group Key: (date_trunc('month'::text, salesdate))
+  Buffers: shared hit=989801 read=4390 temp read=2364 written=2373
+  ->  Sort  (cost=237002.54..240948.36 rows=1578329 width=8) (actual time=1103.179..1255.744 rows=1607050.00 loops=1)
+        Sort Key: (date_trunc('month'::text, salesdate))
+        Sort Method: external merge  Disk: 18912kB
+        Buffers: shared hit=989801 read=4390 temp read=2364 written=2373
+        ->  Index Only Scan using idx_sales_salesdate on sales s  (cost=0.43..52932.83 rows=1578329 width=8) (actual time=0.047..874.303 rows=1607050.00 loops=1)
+              Index Cond: ((salesdate >= '2018-01-01 00:00:00'::timestamp without time zone) AND (salesdate < '2018-02-01 00:00:00'::timestamp without time zone))
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=989801 read=4390
+
+Planning Time: 4.228 ms
+Execution Time: 1400.089 ms
