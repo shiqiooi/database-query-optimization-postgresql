@@ -1,0 +1,42 @@
+Limit  (cost=138405.37..138405.39 rows=10 width=17) (actual time=2497.418..2507.513 rows=10.00 loops=1)
+  Buffers: shared hit=12107 read=67664
+  ->  Sort  (cost=138405.37..138405.61 rows=96 width=17) (actual time=2497.416..2507.510 rows=10.00 loops=1)
+        Sort Key: (count(s.salesid)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=12107 read=67664
+        ->  Finalize GroupAggregate  (cost=138374.40..138403.29 rows=96 width=17) (actual time=2497.205..2507.479 rows=96.00 loops=1)
+              Group Key: c.cityname
+              Buffers: shared hit=12107 read=67664
+              ->  Gather Merge  (cost=138374.40..138401.18 rows=230 width=17) (actual time=2497.194..2507.404 rows=288.00 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=12107 read=67664
+                    ->  Sort  (cost=137374.37..137374.61 rows=96 width=17) (actual time=2430.725..2430.733 rows=96.00 loops=3)
+                          Sort Key: c.cityname
+                          Sort Method: quicksort  Memory: 28kB
+                          Buffers: shared hit=12107 read=67664
+                          ->  Partial HashAggregate  (cost=137370.25..137371.21 rows=96 width=17) (actual time=2430.453..2430.469 rows=96.00 loops=3)
+                                Group Key: c.cityname
+                                Batches: 1  Memory Usage: 32kB
+                                Buffers: shared hit=12091 read=67664
+                                ->  Hash Join  (cost=3201.24..123291.64 rows=2815723 width=13) (actual time=45.043..1866.286 rows=2252708.33 loops=3)
+                                      Hash Cond: (cu.cityid = c.cityid)
+                                      Buffers: shared hit=12091 read=67664
+                                      ->  Hash Join  (cost=3198.08..115570.91 rows=2815723 width=8) (actual time=44.266..1385.234 rows=2252708.33 loops=3)
+                                            Hash Cond: (s.customerid = cu.customerid)
+                                            Buffers: shared hit=12088 read=67664
+                                            ->  Parallel Seq Scan on sales s  (cost=0.00..104981.23 rows=2815723 width=8) (actual time=0.984..224.879 rows=2252708.33 loops=3)
+                                                  Buffers: shared hit=9160 read=67664
+                                            ->  Hash  (cost=1963.59..1963.59 rows=98759 width=8) (actual time=42.804..42.805 rows=98759.00 loops=3)
+                                                  Buckets: 131072  Batches: 1  Memory Usage: 4882kB
+                                                  Buffers: shared hit=2928
+                                                  ->  Seq Scan on customers cu  (cost=0.00..1963.59 rows=98759 width=8) (actual time=0.600..19.549 rows=98759.00 loops=3)
+                                                        Buffers: shared hit=2928
+                                      ->  Hash  (cost=1.96..1.96 rows=96 width=13) (actual time=0.596..0.597 rows=96.00 loops=3)
+                                            Buckets: 1024  Batches: 1  Memory Usage: 13kB
+                                            Buffers: shared hit=3
+                                            ->  Seq Scan on cities c  (cost=0.00..1.96 rows=96 width=13) (actual time=0.538..0.553 rows=96.00 loops=3)
+                                                  Buffers: shared hit=3
+
+Planning Time: 1.396 ms
+Execution Time: 2508.359 ms
