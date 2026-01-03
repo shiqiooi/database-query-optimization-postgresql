@@ -1,0 +1,5 @@
+Planning Time: 0.555 ms
+Execution Time: 584.197 ms
+Filter: ((salesdate >= '2018-01-01 00:00:00'::timestamp without time zone) AND (salesdate < '2019-01-01 00:00:00'::timestamp without time zone))
+-> Parallel Seq Scan on sales
+Buffers: shared hit=11066 read=65758
