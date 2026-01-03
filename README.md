@@ -1,81 +1,171 @@
-# database-query-optimization-postgresql
-SQL scripts, datasets, and execution plan outputs for a PostgreSQL query optimisation study analysing execution strategies using EXPLAIN (ANALYZE, BUFFERS).
+📘 database-query-optimization-postgresql
 
-schema/
-│── 01_create_tables.sql
-│── 02_constraints.sql
-│── 03_create_indexes.sql
-│── 04_analyze.sql
-│── baseline_queries.sql
-│── optimised_queries.sql
+This repository contains SQL scripts, datasets, and execution plan outputs for a PostgreSQL query optimisation study, focusing on how different query formulations and indexing strategies affect execution performance.
 
-data/
-│── categories.csv
-│── cities.csv
-│── countries.csv
-│── customers.csv
-│── employees.csv
-│── products.csv
+The study evaluates baseline vs optimised queries using
+EXPLAIN (ANALYZE, BUFFERS) and compares execution strategies such as:
+
+Sequential Scan vs Index Scan / Index Only Scan
+
+Hash Aggregate vs Group Aggregate
+
+Parallel execution behaviour
+
+Sorting and aggregation costs
+
+📂 Repository Structure
+database-query-optimization-postgresql/
+│
+├── schema/
+│   ├── 01_create_tables.sql
+│   ├── 02_constraints.sql
+│   ├── 03_create_indexes.sql
+│   ├── 04_analyze.sql
+│   ├── categories.csv
+│   ├── cities.csv
+│   ├── countries.csv
+│   ├── customers.csv
+│   ├── employees.csv
+│   ├── products.csv
+│   └── README.md
+│
+├── queries/
+│   ├── A1_baseline.sql
+│   ├── A2_optimised.sql
+│   ├── B1_baseline.sql
+│   ├── B2_optimised.sql
+│   ├── C1_baseline.sql
+│   ├── C2_optimised.sql
+│   ├── C3_monthly_trend_2018.sql
+│   ├── D1_baseline.sql
+│   └── D2_optimised.sql
+│
+├── outputs/
+│   ├── A1_plan.txt
+│   ├── A2_plan.txt
+│   ├── B1_plan.txt
+│   ├── B2_plan.txt
+│   ├── C1_plan.txt
+│   ├── C2_plan.txt
+│   ├── C3_plan.txt
+│   ├── D1_plan.txt
+│   └── D2_plan.txt
+│
+└── README.md
+
+📊 Query Case Overview
+
+Each case compares a baseline query with an optimised version, supported by execution plan outputs.
+
+Case A – Customer Activity by City
+
+A1 (Baseline):
+Aggregates customer transactions by city using joins and grouping without index optimisation.
+
+A2 (Optimised):
+Uses indexed columns and improved aggregation strategy to reduce execution time.
+
+Case B – Top Products by Sales Quantity
+
+B1 (Baseline):
+Computes total quantity sold per product with less efficient join and aggregation order.
+
+B2 (Optimised):
+Rewrites aggregation and join sequence to reduce buffer reads and execution cost.
+
+Case C – Sales Date Filtering & Monthly Trend
+
+C1 (Baseline):
+Filters sales using DATE_TRUNC() on the column, preventing effective index usage.
+
+C2 (Optimised):
+Uses range-based date filtering to enable index scans.
+
+C3:
+Generates a monthly sales trend for the entire year 2018, grouped by month.
+
+Case D – Transaction Frequency Analysis
+
+D1 (Baseline):
+Counts transactions per entity using non-optimised grouping.
+
+D2 (Optimised):
+Improves grouping and filtering strategy for faster aggregation.
+
+🧪 Execution Plan Outputs
+
+All execution plans are stored in the outputs/ folder and were generated using:
+
+EXPLAIN (ANALYZE, BUFFERS)
 
 
----
+Each .txt file corresponds one-to-one with its query file in queries/.
 
-## Dataset Availability
+📁 Dataset Availability
 
-Due to GitHub file size limitations, the transactional `sales.csv` file
-(>25MB) is not included directly in this repository.
+Due to GitHub file size limitations, the transactional dataset sales.csv (>25MB) is not included in this repository.
 
-The full dataset is available externally at:
+📎 Download here:
+https://drive.google.com/file/d/16aEuZmayBbqq4dVgbCXreY2y-kP1scQu/view?usp=sharing
 
-**https://drive.google.com/file/d/16aEuZmayBbqq4dVgbCXreY2y-kP1scQu/view?usp=sharing**
+All other dimension tables are included under schema/.
 
-All schema definitions, index scripts, and analytical queries in this
-repository are sufficient to fully reproduce the experimental setup and
-query optimisation results once the dataset is loaded locally.
+🔁 Reproducibility Instructions
 
----
+Follow these steps to reproduce the results exactly:
 
-## Reproducibility Instructions
+1️⃣ Create Tables
+\i schema/01_create_tables.sql
 
-1. Create the database schema using:
+2️⃣ Apply Constraints
+\i schema/02_constraints.sql
 
+3️⃣ Load CSV Data
 
-01_create_tables.sql
-02_constraints.sql
+Use PostgreSQL COPY or pgAdmin Import Tool to load:
 
+categories.csv
 
-2. Load the CSV datasets into PostgreSQL (COPY command).
+cities.csv
 
-3. Create indexes using:
+countries.csv
 
+customers.csv
 
-03_create_indexes.sql
+employees.csv
 
+products.csv
 
-4. Execute baseline and optimised queries:
+sales.csv (from Google Drive)
 
+4️⃣ Create Indexes
+\i schema/03_create_indexes.sql
 
-baseline_queries.sql
-optimised_queries.sql
+5️⃣ Run Baseline & Optimised Queries
 
+Execute files in queries/ and capture plans using:
 
-5. Analyse execution plans using:
+EXPLAIN (ANALYZE, BUFFERS)
 
+6️⃣ Analyze Statistics
+\i schema/04_analyze.sql
 
-04_analyze.sql
+🛠 Technologies Used
 
+PostgreSQL 18
 
----
+pgAdmin 4
 
-## Technologies Used
+SQL (EXPLAIN ANALYZE, BUFFERS, parallel execution)
 
-- PostgreSQL 18
-- pgAdmin 4
-- SQL (EXPLAIN ANALYZE, BUFFERS)
+🎓 Academic Context
 
----
+This repository supports a coursework submission on:
 
-## Academic Context
+Relational query optimisation
 
-This repository supports a coursework submission on relational
-query optimisation and performance analysis.
+Execution plan analysis
+
+Indexing strategies in PostgreSQL
+
+All queries, plans, and datasets are organised for clarity, reproducibility, and evaluation.
